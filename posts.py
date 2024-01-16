@@ -33,3 +33,9 @@ def create_post(post: Post):
 @app.get("/posts")
 def get_posts():
     return saved_posts
+
+# sample id
+id = randrange(1, 1000000)
+@app.get("/posts/{id}")
+def get_one_post():
+    return {"Details": f"Here is post {id}"}
