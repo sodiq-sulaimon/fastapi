@@ -37,3 +37,4 @@ def say_hi(name: Optional[str] = None): # None is the default value
 
 say_hi()
 say_hi("Bridget")
+
