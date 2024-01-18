@@ -1,7 +1,6 @@
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from pydantic import BaseModel
-from fastapi import Query
 from typing import Annotated
 
 # Simple API
@@ -59,9 +58,9 @@ async def update_item(item_id: int, item: Item):
 dummy_items = [{1 : "Mango"}, {2 : "Banana"}, {3 : "Orange"}, {4 : "Apple"}]
 
 @app.get("/items_valquery")
-async def read_item(skip: int = 0, q: Annotated[str | None, Query(max_length=3)] = None): # Used to limit the length for option query paramter q
-    if q == "yes":
-        return dummy_items[skip:]
+async def read_item(skip: int = 0, limit: Annotated[int | None, Query(le=50)] = None): # Used to set the max number for option query parameter 'limit'
+    if limit:
+        return dummy_items[skip:skip + limit]
     return dummy_items[skip:2]
 
 
