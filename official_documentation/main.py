@@ -1,5 +1,5 @@
 
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, Path
 from pydantic import BaseModel
 from typing import Annotated
 
@@ -62,5 +62,16 @@ async def read_item(skip: int = 0, limit: Annotated[int | None, Query(le=50)] = 
     if limit:
         return dummy_items[skip:skip + limit]
     return dummy_items[skip:2]
+
+# Path parameters and numeric validations
+# from FastAPI import Path
+
+@app.get("/items_path/{item_id}")
+async def read_item(item_id: Annotated[int, Path(title = "Id of the item")],
+                    q: Annotated[str | None, Query(alias = 'item-query')]):
+    results = {"Item_id": item_id}
+    if q:
+        results.update({"q": q})
+    return results
 
 
