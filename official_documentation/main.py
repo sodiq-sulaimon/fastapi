@@ -67,7 +67,7 @@ async def read_item(skip: int = 0, limit: Annotated[int | None, Query(le=50)] = 
 # from FastAPI import Path
 
 @app.get("/items_path/{item_id}")
-async def read_item(item_id: Annotated[int, Path(title = "Id of the item")],
+async def read_item(item_id: Annotated[int, Path(title = "Id of the item", ge=1)],
                     q: Annotated[str | None, Query(alias = 'item-query')]):
     results = {"Item_id": item_id}
     if q:
