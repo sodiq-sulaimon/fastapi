@@ -1,5 +1,5 @@
 
-from fastapi import FastAPI, Query, Path, Body
+from fastapi import FastAPI, Query, Path, Body, Form
 from pydantic import BaseModel, HttpUrl
 from typing import Annotated
 
@@ -125,3 +125,13 @@ async def create_item(item: Item) -> Item:
 def get_items() -> list[Item]:
     return [Item(name="soya milk", price=1.49),
             Item(name="Banana", price=2.5, tax=0.25)]
+
+# Form data
+# from fastapi import Form
+@app.get("/login")
+async def login_home():
+    return "Enter your login info"
+
+@app.post("/login")
+async def login(username: Annotated[str, Form()], password: Annotated[str, Form()]):
+    return {"Username": username}
