@@ -1,6 +1,6 @@
 
 from fastapi import FastAPI, Query, Path, Body
-from pydantic import BaseModel
+from pydantic import BaseModel, HttpUrl
 from typing import Annotated
 
 # Simple API
@@ -92,3 +92,25 @@ async def update_item(
     results = {"Item id": item_id, "Item details": item, "User":user, "Rating": rating}
     return results
     
+
+# Body - Nested models
+
+#from pydantic import HttpUrl
+
+class Image(BaseModel): # submodel
+    url: str
+    name: HttpUrl | str
+
+class Item(BaseModel):
+    name: str
+    description: str | None = None 
+    price: float 
+    tax: float | None = None
+    image: Image | None = None # submodel used as type
+
+@app.put("/items_nested_body/{item_id}")
+async def update_item(
+    item_id: Annotated[int, Path(ge=1)],
+    item: Item):
+    results = {"Item id": item_id, "Item details": item}
+    return results
