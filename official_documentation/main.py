@@ -114,3 +114,14 @@ async def update_item(
     item: Item):
     results = {"Item id": item_id, "Item details": item}
     return results
+
+# Response model - return type
+
+@app.post("/create_items/")
+async def create_item(item: Item) -> Item:
+    return item
+
+@app.get("/create_items/")
+def get_items() -> list[Item]:
+    return [Item(name="soya milk", price=1.49),
+            Item(name="Banana", price=2.5, tax=0.25)]
