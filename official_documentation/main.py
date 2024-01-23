@@ -1,5 +1,5 @@
 
-from fastapi import FastAPI, Query, Path, Body, Form
+from fastapi import FastAPI, Query, Path, Body, Form, File, UploadFile
 from pydantic import BaseModel, HttpUrl
 from typing import Annotated
 
@@ -134,4 +134,19 @@ async def login_home():
 
 @app.post("/login")
 async def login(username: Annotated[str, Form()], password: Annotated[str, Form()]):
-    return {"Username": username}
+    return f"{username}: Login successful!"
+
+
+# Request files
+# from fastapi import File, UploadFile
+
+@app.post("/files/")
+async def create_file(file: Annotated[bytes, File()]):
+    return {"Filesize": len(file)}
+
+@app.post("/uploadfile/")
+async def upload_file(file: UploadFile):
+    # return {"Filename": file.filename}
+    content = await file.read()
+    file.close()
+    return {"Filename": file.filename, "Content": content}
