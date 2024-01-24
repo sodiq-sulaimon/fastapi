@@ -1,5 +1,5 @@
 
-from fastapi import FastAPI, Query, Path, Body, Form, File, UploadFile
+from fastapi import FastAPI, Query, Path, Body, Form, File, UploadFile, status, HTTPException
 from pydantic import BaseModel, HttpUrl
 from typing import Annotated
 
@@ -150,3 +150,21 @@ async def upload_file(file: UploadFile):
     content = await file.read()
     file.close()
     return {"Filename": file.filename, "Content": content}
+
+# Response status code
+# from fastapi import status
+
+items = {"cold": "winter", "hot": "summer"}
+
+@app.get("/itemsstat", status_code=status.HTTP_200_OK)
+def read_item():
+    return items
+
+# Handling Exceptions
+# from fastapi import HTTPException
+
+@app.get("/itemsexc/{item_id}")
+async def read_item(item_id: str):
+    if item_id not in items:
+        raise HTTPException(status_code=404, detail="Item not found")
+    return {"Item": items[item_id]}
