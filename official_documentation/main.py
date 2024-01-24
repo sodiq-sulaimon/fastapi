@@ -168,3 +168,36 @@ async def read_item(item_id: str):
     if item_id not in items:
         raise HTTPException(status_code=404, detail="Item not found")
     return {"Item": items[item_id]}
+
+# Body - Updates (Put & Patch)
+from fastapi.encoders import jsonable_encoder
+
+winter_items = {
+    "jacket": {"name": "Jacket", "price": 50.2},
+    "boot": {"name": "Boot", "description": "Winter boot", "price": 62, "tax": 20.2},
+    "beanie": {"name": "Beanie", "description": None, "price": 50.2, "tax": 10.5, "tags": []},
+}
+
+@app.get("/itemsbody", status_code=status.HTTP_200_OK)
+def read_item():
+    return winter_items
+
+# Update with PUT Method
+
+@app.put("/itemsbody/{item_id}", response_model=Item)
+async def update_item(item_id: str, item: Item):
+    update_item_encoded = jsonable_encoder(item)
+    winter_items[item_id] = update_item_encoded
+    return update_item_encoded
+# Warning: if the new items does not have some values available in the original item, the input model (PUT) will 
+# use the default value set in the item basemodel.
+
+# Partial Update with PATCH Method
+@app.patch("/itemsbody/{item_id}", response_model=Item)
+async def update_item(item_id: str, item: Item):
+    stored_item_data = winter_items[item_id]
+    stored_item_model = Item(**stored_item_data)
+    update_data = item.model_dump(exclude_unset=True)
+    updated_item = stored_item_model.copy(update=update_data)
+    winter_items[item_id] = jsonable_encoder(updated_item)
+    return updated_item
