@@ -1,5 +1,5 @@
 
-from fastapi import FastAPI, Query, Path, Body, Form, File, UploadFile, status, HTTPException
+from fastapi import FastAPI, Query, Path, Body, Form, File, UploadFile, status, HTTPException, Depends
 from pydantic import BaseModel, HttpUrl
 from typing import Annotated
 
@@ -201,3 +201,16 @@ async def update_item(item_id: str, item: Item):
     updated_item = stored_item_model.copy(update=update_data)
     winter_items[item_id] = jsonable_encoder(updated_item)
     return updated_item
+
+# Dependency injection
+# from fastapi import Depends
+async def square(q: int):
+    return {f"{q} square": q ** 2}
+
+@app.get("/depends/{q}")
+async def read_items(answer: Annotated[int, Depends(square)]):
+    return answer
+
+@app.post("/squares/")
+async def read_items(squares: Annotated[int, Form(), Depends(square)]):
+    return squares
